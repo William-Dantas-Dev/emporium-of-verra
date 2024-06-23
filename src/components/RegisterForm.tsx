@@ -1,118 +1,104 @@
-import { createUser } from '@/controllers/user.controller';
+"use client";
 import { ErrorMessage } from '@/interfaces';
-import { RegisterFormProps } from '@/typesProps';
-import React, { useState } from 'react';
+import { registerValidation } from '@/validations/auth.validation';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { SyntheticEvent, useState } from 'react'
+import { ValidationError } from 'yup';
+import CustomFormInput from './CustomFormInput';
 
+const RegisterForm = () => {
+  const [name, setName] = useState<string>('');
+  const [nick, setNick] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
+  const [errors, setErrors] = useState<{ [key: string] : string }>({});
 
-const RegisterForm = ( onSwitchToLogin : RegisterFormProps) => {
-  const [name, setName] = useState('');
-  const [nick, setNick] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const response = await createUser({
-      name: name,
-      nick: nick,
-      email: email,
-      password: password,
-      confirmPassword: confirmPassword,
-    });
-    
-    if(response?.type === "Error"){
+  async function handleSubmit(event: SyntheticEvent){
+    event.preventDefault();
+    try{
+      await registerValidation.validate({ name, nick, email, password, confirmPassword }, { strict: true, abortEarly: false});
+      const result = await signIn('credentials', {
+        name,
+        nick,
+        email,
+        password,
+        type: 'register',
+        redirect: false,
+      })
+      if(result?.error){
+        const errorMessage = result.error === 'email' ? 'E-mail already registered' : 'Failed to Register User';
+        let formErrors: { [key: string]: string } = {};
+        formErrors.apiError = `${errorMessage}`;
+        setErrors(formErrors);
+        return;
+      }
+      router.replace('/admin');
+    }catch (e : any) {
+      let errors: ErrorMessage[] = [];
+      if (e instanceof ValidationError) {
+        e.inner.forEach(error => {
+          const errorObject: ErrorMessage = {
+            name: error.path || '',
+            message: error.message,
+          }
+          errors.push(errorObject);
+        });
+      } else {
+        console.error('Unexpected error:', e);
+      }
       let formErrors: { [key: string]: string } = {};
       let error;
-      if(error = handleFilter(response.errors, "name")){
+      if(error = handleFilter(errors, "name")){
         formErrors.name = error.message;
       }
-      if(error = handleFilter(response.errors, "email")){
-        formErrors.email = error.message;
-      }
-      if(error = handleFilter(response.errors, "nick")){
+      if(error = handleFilter(errors, "nick")){
         formErrors.nick = error.message;
       }
-      if(error = handleFilter(response.errors, "password")){
+      if(error = handleFilter(errors, "email")){
+        formErrors.email = error.message;
+      }
+      if(error = handleFilter(errors, "password")){
         formErrors.password = error.message;
       }
-      if(error = handleFilter(response.errors, "confirmPassword")){
+      if(error = handleFilter(errors, "confirmPassword")){
         formErrors.confirmPassword = error.message;
       }
       setErrors(formErrors);
-    }else{
-
     }
-  };
+  }
+
 
   const handleFilter = (errors: ErrorMessage[], value : string) => {
     return errors.find(error => error.name === value);
   }
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Register</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block mb-2">Name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          {errors.name && <p className="text-red-500">{errors.name}</p>}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Nick</label>
-          <input
-            type="text"
-            value={nick}
-            onChange={(e) => setNick(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          {errors.nick && <p className="text-red-500">{errors.nick}</p>}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          {errors.email && <p className="text-red-500">{errors.email}</p>}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          {errors.password && <p className="text-red-500">{errors.password}</p>}
-        </div>
-        <div className="mb-4">
-          <label className="block mb-2">Confirm Password</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded"
-          />
-          {errors.confirmPassword && <p className="text-red-500">{errors.confirmPassword}</p>}
-        </div>
-        <button type="submit" className="w-full p-2 bg-blue-500 text-white rounded">
-          Register
-        </button>
-      </form>
-      <button className="mt-4 text-blue-500" onClick={() => onSwitchToLogin}>
-        Already have an account? Login
-      </button>
-    </div>
-  );
-};
+    <div className="flex h-full w-full flex-col my-auto">
+      <h2 className="text-center text-2xl font-bold tracking-tight text-white">Register Your Account</h2>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          {errors.apiError && <p className="text-red-500">{errors.apiError}</p>}
+          <CustomFormInput title='name' type="text" placeholder="Name" error={errors.name} onChange={(value) => setName(value)}/>
+          <CustomFormInput title='nick' type="text" placeholder="Nick" error={errors.nick} onChange={(value) => setNick(value)}/>
+          <CustomFormInput title='email' type="email" placeholder="Email" error={errors.email} onChange={(value) => setEmail(value)}/>
+          <CustomFormInput title='password' type="password" placeholder="Password" error={errors.password} onChange={(value) => setPassword(value)}/>
+          <CustomFormInput title='confirmPassword' type="password" placeholder="Confirm Password" error={errors.confirmPassword} onChange={(value) => setConfirmPassword(value)}/>
+          <div>
+            <button type="submit" className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Sign in</button>
+          </div>
+        </form>
 
-export default RegisterForm;
+        <p className="mt-10 text-center text-sm text-gray-500">
+          Always Have Account?
+          <a href="/login" className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500 pl-1">Login Here</a>
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default RegisterForm

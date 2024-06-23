@@ -4,13 +4,9 @@ export interface RegisterFormProps {
   onSwitchToLogin: () => void;
 }
 
-export interface LoginFormProps {
-  onSwitchToRegister: () => void;
-}
-
 export interface CustomButtonProps {
   title: String;
-  onClick: () => void;
+  href: string;
 }
 
 export interface ModalProps {

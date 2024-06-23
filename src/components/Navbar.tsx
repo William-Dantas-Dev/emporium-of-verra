@@ -33,7 +33,7 @@ const Navbar = () => {
           </div>
           <div className="flex items-center">
             <div className='hidden sm:block'>
-              <CustomButton title={"Sign In"} onClick={toggleModal}/>
+              <CustomButton title={"Sign In"} href={'/login'}/>
             </div>
             <button
               className='lg:hidden inline-flex items-center justify-center p-2 ml-3 rounded-md text-white border border-white'
@@ -55,18 +55,11 @@ const Navbar = () => {
                 <NavLink key={menu.id} title={menu.title} active={menu.src === pathname} src={menu.src} mobile={true}/>
               ))}
               <div className='block sm:hidden pt-3'>
-                <CustomButton title={"Sign In"} onClick={toggleModal}/>
+                <CustomButton title={"Sign In"} href={'/login'}/>
               </div>
             </div>
           </div>
         )}
-        <Modal isOpen={isModalOpen} onClose={toggleModal}>
-        {isLoginForm ? (
-          <LoginForm onSwitchToRegister={switchToRegister} />
-        ) : (
-          <RegisterForm onSwitchToLogin={switchToLogin} />
-        )}
-      </Modal>
       </nav>
   )
 }

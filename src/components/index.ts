@@ -3,9 +3,9 @@ import NavLink from './NavLink';
 import CustomButton from './CustomButton';
 import UnderConstruction from './UnderConstruction';
 import Footer from './Footer';
-import Modal from './Modal';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
+import CustomFormInput from './CustomFormInput';
 
 export {
   Navbar,
@@ -13,7 +13,7 @@ export {
   CustomButton,
   UnderConstruction,
   Footer,
-  Modal,
   LoginForm,
   RegisterForm,
+  CustomFormInput
 }

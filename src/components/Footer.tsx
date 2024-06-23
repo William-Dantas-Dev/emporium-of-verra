@@ -1,7 +1,7 @@
 const Footer = ({}: {
 }) => {
   return (
-    <footer className="shadow bg-gray-900 w-full p-6 px-10 flex md:items-center justify-between">
+    <footer className="shadow bg-gray-900 w-full p-6 px-10 flex md:items-center justify-center">
       <span className="text-sm text-center text-gray-500 dark:text-gray-400 tracking-widest">© 2024
         <a className="hover:underline ">Emporium Of Verra.</a>
           All intellectual property and assets related to Ashes of Creation are reserved by Intrepid Studios.
