@@ -1,8 +1,8 @@
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const apiUrl = "http://localhost:3001";
-const secretToken = "dadc8086593318c700e35e91c8b66b25122fc07e";
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const secretToken = process.env.SECRET_TOKEN;
 
 const nextAuthOptions: NextAuthOptions = {
   providers: [
