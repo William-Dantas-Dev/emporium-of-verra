@@ -15,5 +15,5 @@ export {
   Footer,
   LoginForm,
   RegisterForm,
-  CustomFormInput
+  CustomFormInput,
 }
