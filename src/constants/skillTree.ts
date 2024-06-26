@@ -7,7 +7,7 @@ type Connection = {
   angled?: boolean;
 };
 
-export const connections: Connection[] = [
+export const FighterConnections: Connection[] = [
   { startId: 71, midId: 70, endId: 81, startAnchor: 'left', endAnchor: 'top'},
   { startId: 71, midId: 72, endId: 83, startAnchor: 'left', endAnchor: 'top'},
   { startId: 59, midId: 70, endId: 81, startAnchor: 'bottom', endAnchor: 'top'},

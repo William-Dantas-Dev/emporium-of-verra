@@ -1,6 +1,6 @@
 import { User } from "@/interfaces";
 import { CreateUserProps } from '@/typesProps';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = '';
 
 export const registerUser = async (user: CreateUserProps) => {
   try {

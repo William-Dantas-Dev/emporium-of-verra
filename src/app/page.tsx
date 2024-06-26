@@ -1,4 +1,3 @@
-"use client";
 import { Footer, Navbar, UnderConstruction } from '@/components';
 
 export default function Home() {

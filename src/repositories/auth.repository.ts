@@ -1,5 +1,5 @@
 import { AuthUserProps } from '@/typesProps';
-const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const apiUrl = '';
 
 export const authUser = async (user: AuthUserProps) => {
   try {
