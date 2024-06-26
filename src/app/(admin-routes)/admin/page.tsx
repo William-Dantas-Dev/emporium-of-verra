@@ -1,6 +1,6 @@
-import { nextAuthOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Footer, Navbar, UnderConstruction } from '@/components';
 import LogoutButton from '@/components/LogoutButton';
+import { nextAuthOptions } from '@/utils/AuthOptions';
 import { getServerSession } from 'next-auth';
 import { signOut } from 'next-auth/react';
 

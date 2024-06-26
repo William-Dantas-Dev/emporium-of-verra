@@ -1,12 +1,12 @@
 import { ValidationError } from 'yup';
 import { CreateUserProps } from '@/typesProps';
-import { userValidation } from '@/validations/user.validation';
 import { ErrorMessage } from '@/interfaces'
 import { registerUser } from '@/repositories/user.repository';
+import { registerValidation } from '@/validations/auth.validation';
 
 export const createUser = async(user : CreateUserProps) => {
   try{
-    await userValidation.validate(user, { strict: true, abortEarly: false});
+    await registerValidation.validate(user, { strict: true, abortEarly: false});
     registerUser(user);
   }catch (e) {
     let errors: ErrorMessage[] = [];

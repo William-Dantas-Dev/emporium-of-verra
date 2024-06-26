@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation'
 import { EllipsisVerticalIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/16/solid';
-import { CustomButton, LoginForm, Modal, NavLink, RegisterForm } from './';
+import { CustomButton, LoginForm, NavLink, RegisterForm } from './';
 import { Menus } from '@/constants'
 
 const Navbar = () => {
