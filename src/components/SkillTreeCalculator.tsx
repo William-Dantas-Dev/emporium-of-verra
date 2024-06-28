@@ -1,50 +1,55 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { Coord, boxes, FighterConnections } from '@/constants/skillTree';
+import { useEffect, useState, useRef } from 'react';
+import { SkillTreeData, Coord, SkillConnection } from '@/types';
+import SkillTreeItem from './SkillTreeItem';
 
-const SkillTreeCalculator: React.FC<{ selectedClass: string }> = ({ selectedClass }) => {
+interface SkillTreeCalculatorProps {
+  skillTree: SkillTreeData;
+  selectedClass: string;
+}
+
+const SkillTreeCalculator: React.FC<SkillTreeCalculatorProps> = ({ skillTree, selectedClass }) => {
   const [lineCoords, setLineCoords] = useState<Coord[]>([]);
-  const [unlockedBoxes, setUnlockedBoxes] = useState<number[]>(boxes.filter(box => !FighterConnections.some(conn => conn.endId === box.id)).map(box => box.id));
+  const [unlockedBoxes, setUnlockedBoxes] = useState<number[]>(skillTree.boxes.filter(box => !skillTree.connections.some(conn => conn.endId === box.id)).map(box => box.id));
   const [selectedBoxes, setSelectedBoxes] = useState<number[]>([]);
   const [selectedBox, setSelectedBox] = useState<number | null>(null);
   const [maxPoints, setMaxPoints] = useState(50);
   const [remainingPoints, setRemainingPoints] = useState(maxPoints);
 
+  const calculateCoords = () => {
+    const container = document.getElementById('skill-tree-container');
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const newCoords: Coord[] = [];
+    Array.from({ length: 99 }, (_, i) => i + 1).forEach((id: number) => {
+      const element = document.getElementById(`box-${id}`);
+      if (element) {
+        const rect = element.getBoundingClientRect();
+        newCoords.push({
+          id,
+          x: rect.left + rect.width / 2 - containerRect.left,
+          y: rect.top + rect.height / 2 - containerRect.top,
+        });
+      }
+    });
+    setLineCoords(newCoords);
+  };
+
   useEffect(() => {
-    const calculateCoords = () => {
-      const container = document.getElementById('skill-tree-container');
-      if (!container) return;
-
-      const containerRect = container.getBoundingClientRect();
-      const newCoords: Coord[] = [];
-      boxes.forEach((box) => {
-        const element = document.getElementById(`box-${box.id}`);
-        if (element) {
-          const rect = element.getBoundingClientRect();
-          newCoords.push({
-            id: box.id,
-            x: rect.left + rect.width / 2 - containerRect.left,
-            y: rect.top + rect.height / 2 - containerRect.top,
-          });
-        }
-      });
-      setLineCoords(newCoords);
-    };
-
     calculateCoords();
-    window.addEventListener('resize', calculateCoords);
-    window.addEventListener('scroll', calculateCoords);
-    return () => {
-      window.removeEventListener('resize', calculateCoords);
-      window.removeEventListener('scroll', calculateCoords);
-    };
-  }, []);
+  },[]);
 
   useEffect(() => {
     setRemainingPoints(maxPoints - selectedBoxes.length);
   }, [selectedBoxes, maxPoints]);
 
+  useEffect(() => {
+    resetTree();
+  }, [selectedClass]);
+
   const getLine = (startId: number, midId: number | undefined, endId: number, startAnchor: string = 'bottom', endAnchor: string = 'top') => {
+    console.log(startId);
     const start = lineCoords.find((coord) => coord.id === startId);
     const mid = midId !== undefined ? lineCoords.find((coord) => coord.id === midId) : undefined;
     const end = lineCoords.find((coord) => coord.id === endId);
@@ -138,8 +143,8 @@ const SkillTreeCalculator: React.FC<{ selectedClass: string }> = ({ selectedClas
   const handleBoxClick = (id: number) => {
     if (remainingPoints > 0 || selectedBoxes.includes(id)) {
       if (unlockedBoxes.includes(id)) {
-        if (selectedBox === id) {
-          const dependentBoxes = FighterConnections
+        if (selectedBoxes.includes(id)) {
+          const dependentBoxes = skillTree.connections
             .filter((conn) => conn.startId === id)
             .map((conn) => conn.endId)
             .filter((endId) => selectedBoxes.includes(endId));
@@ -149,14 +154,14 @@ const SkillTreeCalculator: React.FC<{ selectedClass: string }> = ({ selectedClas
           setSelectedBox(null);
           setSelectedBoxes(selectedBoxes.filter((boxId) => boxId !== id));
           const newUnlockedBoxes = unlockedBoxes.filter((boxId) => {
-            return !FighterConnections.some((conn) => conn.startId === id && conn.endId === boxId);
+            return !skillTree.connections.some((conn) => conn.startId === id && conn.endId === boxId);
           });
           setUnlockedBoxes(newUnlockedBoxes);
         } else {
           setSelectedBox(id);
           setSelectedBoxes([...selectedBoxes, id]);
           const newUnlockedBoxes = [...unlockedBoxes];
-          FighterConnections
+          skillTree.connections
             .filter((conn) => conn.startId === id)
             .forEach((conn) => {
               if (!newUnlockedBoxes.includes(conn.endId)) {
@@ -171,63 +176,38 @@ const SkillTreeCalculator: React.FC<{ selectedClass: string }> = ({ selectedClas
 
   const resetTree = () => {
     setSelectedBoxes([]);
-    setUnlockedBoxes(boxes.filter(box => !FighterConnections.some(conn => conn.endId === box.id)).map(box => box.id));
+    setUnlockedBoxes(skillTree.boxes.filter(box => !skillTree.connections.some(conn => conn.endId === box.id)).map(box => box.id));
     setSelectedBox(null);
   };
-
-  const shareTree = () => {
-    // Implementar funcionalidade para compartilhar a configuração
-    alert('Funcionalidade de compartilhar ainda não implementada');
-  };
-
   return (
-    <div className="flex justify-center items-center">
-      <div id="skill-tree-container" className="flex flex-col items-center px-10 relative w-[1300px] bg-gray-900 rounded-lg py-4">
-        <div className="flex justify-between items-center w-full mb-4">
-          <div className="text-lg text-white">
-            {`Classe Selecionada: ${selectedClass}`}<br />
-            {`Selecionados: ${selectedBoxes.length} / ${maxPoints} (Pontos restantes: ${remainingPoints})`}
-            <input 
-              type="number" 
-              value={maxPoints} 
-              onChange={(e) => setMaxPoints(parseInt(e.target.value) || 0)}
-              className="ml-4 p-1 w-20 text-black"
-            />
-          </div>
-          <div className="flex">
-            <button onClick={resetTree} className="px-4 py-2 bg-gray-700 text-white mr-2">Resetar</button>
-            <button onClick={shareTree} className="px-4 py-2 bg-yellow-500 text-white">Compartilhar</button>
-          </div>
-        </div>
-        <div className="w-full inset-0 bg-cover bg-center px-10" style={{ backgroundImage: "url('/background.jpg')" }}>
-          <div className="grid grid-cols-11 grid-rows-9 gap-10 relative w-full h-full z-10">
-            {boxes.map((box) => (
+    <div id="skill-tree-container" className="max-w-[1000px] inset-0 bg-cover relative overflow-x-auto overflow-y-hidden" style={{ backgroundImage: "url('/background.jpg')" }}>
+      <div className="inset-0 bg-cover bg-center w-[1000px] p-10">
+        <div className="grid grid-cols-11 grid-rows-9 gap-10 relative z-10">
+          {Array.from({ length: 99 }, (_, i) => i + 1).map((id: number) => {
+            const box = skillTree.boxes.find(box => box.id === id);
+            return (
               <div
-                key={box.id}
-                id={`box-${box.id}`}
-                className={`relative w-14 h-14 ${box.hidden && 'opacity-0'} ${
-                  unlockedBoxes.includes(box.id)
-                    ? 'cursor-pointer'
-                    : 'cursor-not-allowed opacity-50'
-                } ${selectedBox === box.id ? 'bg-blue-500' : ''}`}
-                onClick={() => unlockedBoxes.includes(box.id) && handleBoxClick(box.id)}
+                key={id}
+                id={`box-${id}`}
+                className="relative w-14 h-14 group"
+                onClick={() => box && handleBoxClick(box.id)}
               >
-                <img src={box.imageUrl} alt={`Box ${box.id}`} className="w-full h-full object-cover" />
-                {selectedBoxes.includes(box.id) && (
-                  <div className="absolute top-0 right-0 bg-white text-black text-xs p-1 rounded-full">1</div>
+                {box && <SkillTreeItem item={box} isItemSelected={selectedBoxes.includes(box.id)} isUnSelectedItem={unlockedBoxes.includes(box.id)}/>}
+                {box && (
+                  <div className="absolute top-[-10px] left-1/2 transform -translate-x-1/2 bg-black opacity-50 text-white text-xs p-1 w-6 h-6">
+                    {selectedBoxes.includes(box.id) ? "1" : "0"}/1
+                  </div>
                 )}
               </div>
-            ))}
-          </div>
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-            <defs>
-              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" />
-              </marker>
-            </defs>
-            {FighterConnections.map((conn) => getLine(conn.startId, conn.midId, conn.endId, conn.startAnchor, conn.endAnchor))}
-          </svg>
+            );
+          })}
         </div>
+        <svg className="absolute inset-0 z-0 w-[1000px] h-full">
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" />
+          </marker>
+          {skillTree.connections.map((conn: SkillConnection) => getLine(conn.startId, conn.midId, conn.endId, conn.startAnchor, conn.endAnchor))}
+        </svg>
       </div>
     </div>
   );

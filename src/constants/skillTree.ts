@@ -1,4 +1,4 @@
-type Connection = {
+export type Connection = {
   startId: number;
   midId?: number;
   endId: number;
@@ -47,7 +47,7 @@ export type Coord = {
   y: number;
 };
 
-type Box = {
+export type Box = {
   id: number;
   imageUrl: string;
   hidden?: boolean;

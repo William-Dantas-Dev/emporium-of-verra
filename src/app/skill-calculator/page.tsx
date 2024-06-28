@@ -1,34 +1,39 @@
-"use client"
+"use client";
+import { useState } from 'react';
 import { Footer, Navbar } from '@/components';
 import SkillTreeCalculator from '@/components/SkillTreeCalculator';
-import { useState } from 'react';
+import { SkillTreeData } from '@/types';
+import { skillTrees } from '@/constants/skillTreeData';
+
+const classes = Object.keys(skillTrees);
 
 export default function Page() {
-  const [selectedClass, setSelectedClass] = useState('Fighter'); // Classe padrão selecionada
+  const [selectedClass, setSelectedClass] = useState<string>(classes[2]);
 
-  const classes = [
-    'Bard', 'Cleric', 'Fighter', 'Mage', 'Ranger', 'Rogue', 'Summoner', 'Tank'
-  ];
+  const handleClassChange = (newClass: string) => {
+    if (skillTrees[newClass].enabled) {
+      setSelectedClass(newClass);
+    }
+  };
+
+  const currentSkillTree: SkillTreeData = skillTrees[selectedClass]; // Pegue os dados da árvore de habilidades com base na classe selecionada
 
   return (
-    <div className="min-h-screen min-w-full flex flex-col bg-gray-900">
+    <div className="min-h-screen flex flex-col bg-gray-900 overflow-hidden">
       <Navbar />
-      <div className="flex justify-center mt-4">
+      {/* <div className="flex justify-center items-center my-4">
         {classes.map((cls) => (
           <button
             key={cls}
-            onClick={() => setSelectedClass(cls)}
-            className={`px-4 py-2 mx-1 ${
-              selectedClass === cls ? 'bg-blue-500' : 'bg-gray-700'
-            } text-white`}
+            onClick={() => handleClassChange(cls)}
+            className={`px-4 py-2 mx-2 ${selectedClass === cls ? 'bg-blue-500 text-white' : 'bg-gray-700 text-gray-300'} ${!skillTrees[cls].enabled && 'opacity-50 cursor-not-allowed'}`}
+            disabled={!skillTrees[cls].enabled}
           >
             {cls}
           </button>
         ))}
-      </div>
-      <div className="flex justify-center items-center flex-grow pt-4">
-        <SkillTreeCalculator selectedClass={selectedClass} />
-      </div>
+      </div> */}
+      <SkillTreeCalculator skillTree={currentSkillTree} selectedClass={selectedClass} />
       <Footer />
     </div>
   );

@@ -7,21 +7,3 @@
   padding: 0;
   font-family: "Manrope", sans-serif;
 }
-
-/* styles.css */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-gap: 10px;
-}
-
-.grid-cell {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  padding: 10px;
-}
-
-.connection {
-  font-size: 12px;
-  color: #666;
-}
