@@ -1,14 +1,7 @@
-export interface SkillBoxData {
+export interface SkillsData {
   id: number;
-  imageUrl: string;
-  name: string;
-  level: number;
-  mana: number;
-  range: string;
-  effect: string;
-  description: string;
-  combo: string;
-  cooldown: number;
+  position: number,
+  skill: Skill,
 }
 
 export interface SkillConnection {
@@ -21,7 +14,7 @@ export interface SkillConnection {
 
 export interface SkillTreeData {
   enabled: boolean,
-  boxes: SkillBoxData[];
+  skills: SkillsData[];
   connections: SkillConnection[];
 }
 
@@ -29,4 +22,14 @@ export interface Coord {
   id: number;
   x: number;
   y: number;
+}
+export interface Skill {
+  id: number,
+  image: string,
+  name: string,
+  description: string,
+  isActive: boolean,
+  level: string,
+  cooldown: string,
+  range: string,
 }

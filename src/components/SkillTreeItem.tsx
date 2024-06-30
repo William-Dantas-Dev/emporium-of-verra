@@ -1,41 +1,41 @@
-import { SkillBoxData } from '@/types'
-import React from 'react'
+import { Skill } from '@/types';
+import React, { useState } from 'react';
 
 interface SkillTreeItemProps {
-  
+  skill: Skill;
+  isItemSelected: boolean;
+  isUnSelectedItem: boolean;
 }
 
-const SkillTreeItem = ({ item, isItemSelected, isUnSelectedItem} : {
-  item: SkillBoxData,
-  isItemSelected: boolean,
-  isUnSelectedItem: boolean,
-}) => {  
+const SkillTreeItem = ({ skill, isItemSelected, isUnSelectedItem } : SkillTreeItemProps) => {
+  const [isTooltipVisible, setTooltipVisible] = useState(false);
   return (
-    <>
+    <div className={`relative group`}>
       <img
-        src={item.imageUrl}
-        alt={`Item${item.id}`}
-        className={`w-full h-full object-cover
-          ${isItemSelected && 'border-2 border-yellow-500'}
-          ${item && (isUnSelectedItem ? 'cursor-pointer' : 'cursor-not-allowed opacity-50')}
+        src={skill.image}
+        alt={`Item${skill.id}`}
+        className={`w-full h-full object-cover ${!skill.isActive && "rounded-full"}
+          ${isItemSelected && `border-4 border-yellow-400`}
+          ${skill && (isUnSelectedItem ? 'cursor-pointer' : 'cursor-not-allowed opacity-50')}
         `}
+        onMouseEnter={() => setTooltipVisible(true)}
+        onMouseLeave={() => setTooltipVisible(false)}
       />
-      <div className="hidden group-hover:block absolute top-full left-1/2 transform -translate-x-1/2 mt-2 bg-black bg-opacity-80 text-white p-2 rounded z-20 w-48">
-        <div className="flex items-center mb-2">
-          <img src={item.imageUrl} alt={`Item${item.id}`} className="w-8 h-8 mr-2 rounded" />
-          <strong>{item.name}</strong>
+      {isTooltipVisible && (
+        <div className="absolute left-full -translate-y-1/2 top-1/2 ml-2 bg-black text-white p-2 rounded z-50 w-96">
+          <div>
+            <div>
+              <strong>{skill.name}</strong>
+            </div>
+            <div><strong>Level:</strong> {skill.level}</div>
+            <div><strong>Range:</strong> {skill.range}</div>
+            <div><strong>Cooldown:</strong> {skill.cooldown}</div>
+            <div><strong>Description:</strong> {skill.description}</div>
+          </div>
         </div>
-        <div className="text-xs">
-          <div><strong>Level:</strong> {item.level}</div>
-          <div><strong>Mana:</strong> {item.mana}</div>
-          <div><strong>Range:</strong> {item.range}</div>
-          <div><strong>Cooldown:</strong> {item.cooldown} sec</div>
-          <div><strong>Effect:</strong> {item.effect}</div>
-          <div><strong>Description:</strong> {item.description}</div>
-        </div>
-      </div>
-    </>
-  )
+      )}
+    </div>
+  );
 }
 
-export default SkillTreeItem
+export default SkillTreeItem;

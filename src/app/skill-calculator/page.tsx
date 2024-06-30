@@ -16,12 +16,12 @@ export default function Page() {
     }
   };
 
-  const currentSkillTree: SkillTreeData = skillTrees[selectedClass]; // Pegue os dados da árvore de habilidades com base na classe selecionada
+  const currentSkillTree: SkillTreeData = skillTrees[selectedClass];
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900 overflow-hidden">
       <Navbar />
-      {/* <div className="flex justify-center items-center my-4">
+      <div className="grid grid-cols-8 items-center my-4">
         {classes.map((cls) => (
           <button
             key={cls}
@@ -32,7 +32,7 @@ export default function Page() {
             {cls}
           </button>
         ))}
-      </div> */}
+      </div>
       <SkillTreeCalculator skillTree={currentSkillTree} selectedClass={selectedClass} />
       <Footer />
     </div>
