@@ -1,6 +1,5 @@
 export interface SkillsData {
   id: number;
-  position: number,
   skill: Skill,
 }
 
@@ -14,6 +13,7 @@ export interface SkillConnection {
 
 export interface SkillTreeData {
   enabled: boolean,
+  backgroundImage: string,
   skills: SkillsData[];
   connections: SkillConnection[];
 }
@@ -32,4 +32,5 @@ export interface Skill {
   level: string,
   cooldown: string,
   range: string,
+  changedSkill?: boolean,
 }

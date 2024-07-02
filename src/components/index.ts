@@ -6,6 +6,7 @@ import Footer from './Footer';
 import LoginForm from './LoginForm';
 import RegisterForm from './RegisterForm';
 import CustomFormInput from './CustomFormInput';
+import TreeOptions from './TreeOptions';
 
 export {
   Navbar,
@@ -16,4 +17,5 @@ export {
   LoginForm,
   RegisterForm,
   CustomFormInput,
+  TreeOptions,
 }

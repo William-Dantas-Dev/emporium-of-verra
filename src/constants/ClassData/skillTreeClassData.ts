@@ -1,28 +1,11 @@
 // constants/skillTreeData.ts
 import { SkillTreeData } from '@/types';
-import { fighterSkills } from '@/constants/SkillsFighter';
+import { fighterSkills } from '@/constants/ClassData/SkillsFighter';
 
-export const skillTrees: { [key: string]: SkillTreeData } = {
-  Bard: {
-    enabled: false,
-    skills: [
-      // Dados da árvore de habilidades do Cleric
-    ],
-    connections: [
-      // Conexões da árvore de habilidades do Cleric
-    ],
-  },
-  Cleric: {
-    enabled: false,
-    skills: [
-      // Dados da árvore de habilidades do Cleric
-    ],
-    connections: [
-      // Conexões da árvore de habilidades do Cleric
-    ],
-  },
+export const skillTreeClass: { [key: string]: SkillTreeData } = {
   Fighter: {
     enabled: true,
+    backgroundImage: '/background.jpg',
     skills: [
       { id: 5, position: 5, skill: fighterSkills[0]},
       { id: 12, position: 12, skill: fighterSkills[1]},
@@ -93,17 +76,9 @@ export const skillTrees: { [key: string]: SkillTreeData } = {
       { startId: 29, midId: 18, endId: 16, startAnchor: 'top', endAnchor: 'right'},
     ],
   },
-  Mage: {
-    enabled: false,
-    skills: [
-      // Dados da árvore de habilidades do Cleric
-    ],
-    connections: [
-      // Conexões da árvore de habilidades do Cleric
-    ],
-  },
   Ranger: {
     enabled: true,
+    backgroundImage: 'https://c4.wallpaperflare.com/wallpaper/902/546/372/street-fighter-street-fighter-v-video-games-ryu-street-fighter-wallpaper-preview.jpg',
     skills: [
       { id: 5, position: 5, skill: fighterSkills[0]},
       { id: 12, position: 5, skill: fighterSkills[0]},
@@ -153,8 +128,8 @@ export const skillTrees: { [key: string]: SkillTreeData } = {
       { startId: 61, endId: 64, startAnchor: 'right', endAnchor: 'left'},
       { startId: 64, endId: 42, startAnchor: 'top', endAnchor: 'bottom'},
       { startId: 42, endId: 20, startAnchor: 'top', endAnchor: 'bottom'},
-      { startId: 12, midId: 1, endId: 5, startAnchor: 'top', endAnchor: 'left' },
-      { startId: 20, midId: 9, endId: 5, startAnchor: 'top', endAnchor: 'right' },
+      { startId: 13, midId: 2, endId: 5, startAnchor: 'top', endAnchor: 'left' },
+      { startId: 16, endId: 5, startAnchor: 'top', endAnchor: 'bottom' },
       { startId: 56, endId: 67, startAnchor: 'bottom', endAnchor: 'top'},
       { startId: 49, endId: 46, startAnchor: 'left', endAnchor: 'right'},
       { startId: 49, midId: 47, endId: 36, startAnchor: 'left', endAnchor: 'bottom'},
@@ -172,33 +147,6 @@ export const skillTrees: { [key: string]: SkillTreeData } = {
       { startId: 41, endId: 52, startAnchor: 'bottom', endAnchor: 'top'},
       { startId: 20, endId: 19, startAnchor: 'left', endAnchor: 'right'},
       { startId: 29, midId: 18, endId: 16, startAnchor: 'top', endAnchor: 'right'},
-    ],
-  },  
-  Rogue: {
-    enabled: false,
-    skills: [
-      // Dados da árvore de habilidades do Cleric
-    ],
-    connections: [
-      // Conexões da árvore de habilidades do Cleric
-    ],
-  },
-  Summoner: {
-    enabled: false,
-    skills: [
-      // Dados da árvore de habilidades do Cleric
-    ],
-    connections: [
-      // Conexões da árvore de habilidades do Cleric
-    ],
-  },
-  Tank: {
-    enabled: false,
-    skills: [
-      // Dados da árvore de habilidades do Cleric
-    ],
-    connections: [
-      // Conexões da árvore de habilidades do Cleric
     ],
   },
 };
